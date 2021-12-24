@@ -5,7 +5,7 @@
 # O Allah: (please do) bless Muhammad (s.a.w) and the Household of Muhammad (s.a.w)
 
 ############################################################
-# Muqobil Dasturlar To'plami (c) 2009-2019     		   #
+# Muqobil Dasturlar To'plami (c) 2009-2021     		   #
 # Purpose:                                                 #
 # Date: started on 19.08.2019                		   #
 # Released under the terms of GPL2       		   #
