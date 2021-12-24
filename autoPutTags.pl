@@ -98,6 +98,7 @@ else
 							["Ленинград"],
 						);
  
+ my @additional_data;
  my $concatenate_str;
  my $row_has_2_be_put;
  my $str;
@@ -114,6 +115,8 @@ else
  my $pub_year;
  my $pub_name;
  my $surname_initial_word;
+ my $pub_store_place;
+ my $i = 0;
  
  while ( $row_has_2_be_put = <TAGPUT>)
  {
@@ -125,6 +128,51 @@ else
  $row_has_2_be_put = $concatenate_str;
  #$row_has_2_be_put = "akjkjsdksjdksjd \t sfdfd \nfdffasd 1234  - 600 c\n";
 
+if( $row_has_2_be_put =~ m/(?:%)? (?<pub_store_place>[%\w\d]+|[\d.\-а-яА-Я]{1,} \s*? \d+?) (?:\s)+? ([^a-zа-я]{3,}[A-ZА-Я]\s*\d+)? \s* ( [\w\.\-]+\d+ )? /muxs) #([\s\d+\.\W][^А-Я]; (?=[\s]+[^\.А-Я][^\.А-Я]?) /muxs )
+{
+   #print OUTPUT "PubStorePlace : \$3 ".$3." "."!!!\n"; 
+   #print OUTPUT "PubStorePlace : ".$+{pub_store_place}." "."!!!\n";    
+  if($+{pub_store_place} ne undef)
+  {
+         $pub_store_place = $+{pub_store_place};
+         $pub_store_place = " #17 ".$pub_store_place." #";
+
+     #if((?<pub_store_place>[.а-яА-Я\d]{1,}\s+?[\.\w\d]{2,}) (?:\s)+? ([А-Я]\s\d+)?/muxs))
+     #print OUTPUT "PubStorePlace : ".$+{pub_store_place}." "."!!!\n";
+
+     
+     #print OUTPUT "PubStorePlace : ".$pub_store_place." "."!!!\n";
+     
+     if($2 ne undef)
+     {
+       #print OUTPUT "PubStorePlace \$2: ".$2." !!!\n";
+       #$pub_store_place = " #17 ".$+{pub_store_place}." ".$2." #";
+       $pub_store_place = $pub_store_place." #18 ".$2." # ";
+     }
+     elsif($3 ne undef)
+     {
+          $pub_store_place = $pub_store_place." #18 ".$3." # ";
+     }
+     elsif($row_has_2_be_put =~ m/(?:\s*)? (?:[\s\.\-а-яА-ЯA-Z\d]+)? ([A-ZА-Я]\s*\d{1,4}) (?=[\s*\.\-а-яА-Я\d]+) /mux)
+     {
+        #print OUTPUT "PubStorePlace \$1: ".$1." !!!\n";
+        #$row_has_2_be_put =~ s/(?:\s*)? ([А-Я]\s+\d{1,4})//muxs;
+        
+        #$pub_store_place = " #17 ".$pub_store_place." ".$1." # ";
+
+        $pub_store_place = $pub_store_place ." #18 ".$1." # ";
+        #$row_has_2_be_put =~ s/(?:\s*)? (?:[\s\.\-а-яА-Я\d]+)? ([А-Я]\s*\d{1,4}) (?=[\s*.\-а-яА-Я\d]+)?//mux;
+     }
+     
+     #print OUTPUT "PubStorePlace : ".$pub_store_place." !!!\n";
+     #print OUTPUT "PubStorePlace: ".$1.$2.$3." \n";
+   }
+  #$row_has_2_be_put =~ s/(?:%)? (?<pub_store_place>[%\d*]|[.?а-яА-Я\d]{1,} \s*? \d+?) (?:\s)+? (?=([А-Я\s]+\d+))?/ $pub_store_place /mux;
+
+   $row_has_2_be_put =~ s/(?:%)? (?<pub_store_place>[%\d*]|[.?а-яА-Я\d]{1,} \s*? \d+?) (?:\s)+? (?=([А-Я\s]+\d+))?/$pub_store_place/mux;
+
+    #print OUTPUT "PubStorePlace : ".$pub_store_place." "."!!!\n";
+}
 
 if( $row_has_2_be_put =~ m/ (\/) (?<coauthors>[\w\s,\.]{3,} )  (\-?\s*[А-Я\.:]) /muxs )
 {
@@ -260,7 +308,7 @@ if( $row_has_2_be_put =~ m/ ((Науч|Под)\.?\s*ред\.?) ([а-я\.\s]+)? (
  
 # if($pub_name eq undef) and ($pub_year eq undef)
  {
-	if( $row_has_2_be_put =~ m/( (\s*\-?\.?,?) (?<pub_city> [А-Я]{1}[\s*\.:,]{1,4} ) ([\.:,"«]{1,4}\s*) (?<pub_name> \s* [\w\-\.\s]{3,} ) (»?"?,?\s*) (?<pub_year> [\nI\d]{4,5}) )/muxs )
+	if( $row_has_2_be_put =~ m/( (\s*\-?\.?,?) (?<pub_city> [А-Я]{1}[\s*\.:;,]{1,4} ) ([\.;:,"«]{1,4}\s*) (?<pub_name> \s* [\w\-\.\s]{3,} ) (»?"?,?:?\s*) (?<pub_year> [\nI\d]{4,5}) )/muxs )
 	{
 		$pub_name = $+{pub_name};
 		$pub_city = $+{pub_city};
@@ -269,7 +317,7 @@ if( $row_has_2_be_put =~ m/ ((Науч|Под)\.?\s*ред\.?) ([а-я\.\s]+)? (
 	
 		#print OUTPUT 'Publish '.$pub_city.' '.$pub_name.' '.$pub_year." \n";
 		
-		$row_has_2_be_put =~ s/( (\s*\-?\.?,?) (?<pub_city> [А-Я]{1}[\s*\.:,]{1,4} ) ([\.:,"«]{1,4}\s*) (?<pub_name> \s* [\w\-\.\s]{3,} ) (»?"?,?\s*) (?<pub_year> [\nI\d]{4,5}) )/ #14 $pub_city # #3 $pub_name # #15 $pub_year #/muxs;
+		$row_has_2_be_put =~ s/( (\s*\-?\.?,?) (?<pub_city> [А-Я]{1}[\s*\.:;,]{1,4} ) ([\.:;,"«]{1,4}\s*) (?<pub_name> \s* [\w\-\.\s]{3,} ) (»?"?,?:?\s*) (?<pub_year> [\nI\d]{4,5}) )/ #14 $pub_city # #3 $pub_name # #15 $pub_year #/muxs;
 		
 		#$row_has_2_be_put =~ s/( (\s*\-?\.?) (?<pub_city> [А-Я]{1}[\.:,"]{1,4} ) ([\.:,"]{1,4}) (?<pub_name> \s* [\w\-\.\s]{3,} ) (,?\s*) (?<pub_year> [\nI\d]{4,5}) )/ #14 $pub_city # #3 $pub_name # #15 $pub_year #/muxs;
 	 }
@@ -277,9 +325,9 @@ if( $row_has_2_be_put =~ m/ ((Науч|Под)\.?\s*ред\.?) ([а-я\.\s]+)? (
  
  if(($pub_city eq undef) or ($pub_year eq undef))
  {
-	if( $row_has_2_be_put =~ m/( (\s*\-?\.?) (?<pub_city> ([А-Я]{1} \s*)) ([\.:,"]{1,5}\s*)  (?<pub_year> [\nI\d]{4,5}) )/muxs )
+	if( $row_has_2_be_put =~ m/( (\s*\-?\.?) (?<pub_city> ([А-Я]{1} \s*)) ([\.:;,"]{1,5}\s*[\;]{1,}\s*)  (?<pub_year> [\nI\d]{4,5}) )/muxs )
 	{
-		#print OUTPUT "City:".$+{pub_city}.' '.$+{pub_year}."\n"; 
+		print OUTPUT "City:".$+{pub_city}.' '.$+{pub_year}."\n"; 
 		$row_has_2_be_put =~ s/( (\s*\-?\.?) (?<pub_city> ([А-Я]{1}\s* )) ([\.:,"]{1,5}\s*) (?<pub_year> [\nI\d]{4,5}) )/ #14 $+{pub_city} # #15 $+{pub_year} #/muxs;
 	}
  }
@@ -288,7 +336,7 @@ if( $row_has_2_be_put =~ m/ ((Науч|Под)\.?\s*ред\.?) ([а-я\.\s]+)? (
  if( $row_has_2_be_put =~ m/Изд-во"?( (?<pub_name_ex>(?:[\w]+)) )/imuxs)
  { 
 	 my $city;
-	 my $i = 0;
+	 #my $i = 0;
 	 
 	 #say "Publishing: ".$+{pub_name_ex};
 	 #$pub_year = $1;
@@ -469,8 +517,12 @@ if($surname_initial_word ne undef)
 		$pub_auth_sign = $+{pub_auth_sign};
 		$pub_auth_sign = " #16 ".$pub_auth_sign." # ";
 		#print OUTPUT "Auth sign: ".$+{pub_auth_sign}."\n";
+      #print OUTPUT $pub_auth_sign."\n";
+
+      $additional_data[$counter] = $pub_auth_sign;
+      $counter++;
 		
-		$row_has_2_be_put =~ s/(?<pub_auth_sign>( ($surname_initial_word\s*\.?\d{2,})([^:\.\d+\w+\-]\n?) ) )/ $pub_auth_sign /muxs
+		#$row_has_2_be_put =~ s/(?<pub_auth_sign>( ($surname_initial_word\s*\.?\d{2,})([^:\.\d+\w+\-]\n?) ) )/ $pub_auth_sign /muxs
 	 }
 }
 
@@ -502,10 +554,10 @@ if( $title eq  undef )
 			
 			#if( $row_has_2_be_put =~ m/(?<title> [А-Я][а-я]{2,}[\s+][:а-я\*\s\.]{3,}  [а-яА-Я\s\.\-]+ ) (Пер)? /gmuxs)
 			
-			if( $row_has_2_be_put =~ m/([А-Я][а-я\-\s]{2,}) ([а-яА-Я\d\s:]+)? (?<title> \s+[:а-я"«,\*\s]{3,} [\dа-яА-Я»"\s\-,]+  ) ([\/\s\.])?  /muxs)
+			if( $row_has_2_be_put =~ m/([А-Я][а-я\-\s]{2,}) ([а-яА-Я\d\s:]+)? (?<title> \s+[:а-я"«,\*\s]{3,} [\dа-яА-Я»"\s\-,']+ ) ([\/\s\.])  /muxs)
 			{
-                #print OUTPUT 'Title: '.$3."\n";
 				$title = $1.$2.$+{title}.$4;
+          #print OUTPUT 'Title:  '.$title."\n";
 				
 				if($title =~ m/:/muxs)
 				{
@@ -548,7 +600,7 @@ if( $title eq  undef )
 				#print OUTPUT 'Title: '.$title."\n";
 				
 				
-				$row_has_2_be_put =~ s/([А-Я][а-я\-\s]{2,}) ([а-яА-Я\d\s:]+)? (?<title> \s+[:а-я"«,\*\s]{3,} [\dа-яА-Я»"\s\-,]+ ) ([\/\s\.])? /$title/muxs;
+				$row_has_2_be_put =~ s/([А-Я][а-я\-\s]{2,}) ([а-яА-Я\d\s:]+)? (?<title> \s+[:а-я"«,\*\s.]{3,} [\dа-яА-Я»"\s\-,.']+ ) ([\/\s\.]) /$title/muxs;
 				
 				#$row_has_2_be_put =~ s/ (?<title> ([А-Я][а-я]{2,}\s+[а-я\*,\s]{3,}[а-яА-Я\-]* ) [\.\-,\s:а-яА-Я]{2,} ) /$title/muxs;
 				
@@ -577,7 +629,8 @@ if( $title eq  undef )
  
  
  #while ( $row_has_2_be_put = <TAGPUT>)
- while ( $counter > 5)
+ #while ( $counter > 5)
+if ( $counter eq -1)
  { 
 	 #chomp($row_has_2_be_put);
 	 
@@ -610,7 +663,7 @@ if( $title eq  undef )
 	if($author eq undef)
 	{
 		my @fields;
-		my $i = 0;
+		#my $i = 0;
 		
 		if( $row_has_2_be_put =~ m/( ( [A-ZА-Яa-zа-я,]{3,}(?:\s) ) ([А-Я]{1} (?:\.\s)? ([а-я,]+)?) (?:[А-Я]{1} (?:\.)?)? (?:[А-Я]{1} (?:\.)?)? )/uxs)
 		#if( $row_has_2_be_put =~ m/(?<author> ([A-ZА-Яa-zа-я\s,]{3,} ) ([А-Я]{1} (?:\.\s)? ([а-я,]+)?) )/uxs)
@@ -803,6 +856,18 @@ if( $title eq  undef )
 	{
 		 $all_is_done = 0;
 	}
+ 
+ if($counter > 0)
+ {
+    $row_has_2_be_put =~ s/\*\*\*\*\*//mux;
+    for $i (0..$#additional_data)
+    {
+       #print OUTPUT  $additional_data[$i];
+        $row_has_2_be_put.=" ".$additional_data[$i]." \n";      
+    }
+   $row_has_2_be_put .= "*****\n";
+ }
+ 
  print OUTPUT  $row_has_2_be_put."\n";
  print OUTPUT 'Counter: '.$counter;
  
