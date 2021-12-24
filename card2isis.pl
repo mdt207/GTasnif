@@ -5,7 +5,7 @@
 # O Allah: (please do) bless Muhammad (s.a.w) and the Household of Muhammad (s.a.w)
 
 ############################################################
-# Muqobil Dasturlar To'plami (c) 2009-2017     		   #
+# Muqobil Dasturlar To'plami (c) 2009-2021     		   #
 # Purpose: Ugly way of converting sorted cards into ISIS   #
 # Date: started on 04.04.2009                		   #
 # Released under the terms of GPL3       		   #
