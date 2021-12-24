@@ -147,7 +147,7 @@ sub read_card
           foreach $key(sort(keys %uhash))
            { 
              #print "$key = $uhash{$key}\n";
-             $unimark_pat[$i][1] =~ s/$key/$uhash{$key}/;   
+             $unimark_pat[$i][1] =~ s/$key/$uhash{$key}/g;
            }
           #print @{$unimark_pat[$i]};
           #(print OP $unimark_pat[$i][0].$unimark_pat[$i][1]);
